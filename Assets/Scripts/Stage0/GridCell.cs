@@ -8,7 +8,8 @@ public enum CellType
     EmptyCell,
     RoomCell,
     PathCell,
-    WallCell
+    WallCell,
+    StartCell
 }
 
 public interface ICell
@@ -52,22 +53,22 @@ public class GridCell
         CellCost = 10;
     }
 
-    public void AddCell(GridCell cell)
+    public void AddCell(GridCell cellPosition)
     {
-        connectedCells.Add(cell);
+        connectedCells.Add(cellPosition);
     }
 
-    public void RemoveCell(GridCell cell)
+    public void RemoveCell(GridCell cellPosition)
     {
-        if (connectedCells.Contains(cell))
+        if (connectedCells.Contains(cellPosition))
         {
-            connectedCells.Remove(cell);
+            connectedCells.Remove(cellPosition);
         }
     }
 
-    public void SetCells(List<GridCell> cells)
+    public void SetCells(List<GridCell> cellPositions)
     {
-         connectedCells = cells;
+         connectedCells = cellPositions;
     }
 
     public List<GridCell> GetCells()
@@ -78,6 +79,21 @@ public class GridCell
     public void ClearCells()
     {
         connectedCells.Clear();
+    }
+
+    public GridCell GetEmptyCells(Grid grid)
+    {
+        foreach(GridCell cellPosition in connectedCells)
+        {
+            GridCell currentCell = grid.GetCell((int)cellPosition.position.x, (int)cellPosition.position.y);
+
+            if (currentCell.CellType == CellType.EmptyCell)
+            {
+                return currentCell;
+            }
+        }
+
+        return null;
     }
 }
 

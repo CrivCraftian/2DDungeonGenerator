@@ -9,76 +9,91 @@ public static class AStarPathfinding
 {
     public static List<GridCell> RunAStarWithRooms(Grid grid, Room StartRoom, Room EndRoom)
     {
-        GridCell startCell = closestCell(StartRoom, EndRoom.RoomCentre);
-        GridCell goalCell = closestCell(EndRoom, StartRoom.RoomCentre);
+        GridCell startCell = closestCell(grid, StartRoom, EndRoom.RoomCentre); //.GetEmptyCells(grid);
+        GridCell goalCell = closestCell(grid, EndRoom, StartRoom.RoomCentre); //.GetEmptyCells(grid);
 
-        goalCell.CellType = CellType.EmptyCell;
+        // goalCell.CellType = CellType.EmptyCell;
 
-        // Debug.Log($"Start Cell Position: {startCell.position}");
-        // Debug.Log($"End Cell Position: {goalCell.position}");
-
+        Debug.Log($"Start Cell Position: {startCell.position}");
+        Debug.Log($"End Cell Position: {goalCell.position}");
         PriorityQueue<GridCell> openset = new PriorityQueue<GridCell>();
-        List<GridCell> closedset = new List<GridCell>();
-
+        HashSet<GridCell> closedset = new HashSet<GridCell>();
         Dictionary<GridCell, GridCell> parentList = new Dictionary<GridCell, GridCell>();
 
         startCell.gCost = 0;
         startCell.hCost = (int)CalculateManhattanDistance(startCell.position, goalCell.position) * 10;
 
+        startCell.CellType = CellType.StartCell;
+
         openset.Enqueue(startCell, 0);
 
-        while(openset.Count()>0)
+        while (openset.Count() > 0)
         {
             GridCell currentCell = openset.Dequeue();
 
             closedset.Add(currentCell);
 
-            if(Vector2.Distance(currentCell.position, goalCell.position) < 0.1f)
+            /*
+            if (Vector2.Distance(currentCell.position, goalCell.position) < 0.1f)
             {
                 parentList[goalCell] = currentCell;
                 Debug.Log("FoundPath");
-                return ReconstructPath(startCell, goalCell, parentList);
+                foreach(KeyValuePair<GridCell, GridCell> dic  in parentList)
+                {
+                    Debug.Log($"{dic.Key.position} = {dic.Value.position}");
+                }
+                return ReconstructPath(grid, startCell, goalCell, parentList);
             }
+            */
 
-            foreach(GridCell neibhorCell in currentCell.GetCells())
+            foreach (GridCell neighborCell in currentCell.GetCells())
             {
-                Debug.Log("Iterating Neibhors");
+                // Debug.Log(neighborCell.position);
+                Debug.Log("Iterating Neighbors");
 
-                if(closedset.Contains(neibhorCell) || neibhorCell.CellType == CellType.RoomCell)
+                if (Vector2.Distance(neighborCell.position, goalCell.position) < 0.1f)
+                {
+                    parentList[goalCell] = currentCell;
+                    Debug.Log("FoundPath");
+                    foreach (KeyValuePair<GridCell, GridCell> dic in parentList)
+                    {
+                        // Debug.Log($"{dic.Key.position} = {dic.Value.position}");
+                    }
+                    return ReconstructPath(grid, startCell, goalCell, parentList);
+                }
+                else if (closedset.Contains(neighborCell) || neighborCell.CellType == CellType.RoomCell)
                 {
                     Debug.Log("Passed");
-                    continue; 
+                    continue;
                 }
 
-                float newGCost = currentCell.gCost + neibhorCell.CellCost;
+                float newGCost = currentCell.gCost + neighborCell.CellCost;
 
-                Debug.Log(newGCost);
-
-                if(openset.Contains(neibhorCell))
+                if (openset.Contains(neighborCell))
                 {
-                    neibhorCell.gCost = newGCost;
-                    neibhorCell.hCost = CalculateEuclideanDistance(neibhorCell.position, goalCell.position) * 10;
-                    parentList[neibhorCell] = currentCell;
+                    neighborCell.gCost = newGCost;
+                    neighborCell.hCost = CalculateManhattanDistance(neighborCell.position, goalCell.position) * 10;
+                    parentList[neighborCell] = currentCell;
 
-                    float newPriority = (neibhorCell.gCost + neibhorCell.hCost);
+                    float newPriority = neighborCell.gCost + neighborCell.hCost;
 
-                    if (openset.GetPriority(neibhorCell) > newPriority)
+                    if (openset.GetPriority(neighborCell) > newPriority)
                     {
-                        openset.SetPriority(neibhorCell, newPriority);
+                        openset.SetPriority(neighborCell, newPriority);
                     }
                 }
                 else
                 {
-                    neibhorCell.gCost = newGCost;
-                    neibhorCell.hCost = CalculateEuclideanDistance(neibhorCell.position, goalCell.position) * 10;
+                    neighborCell.gCost = newGCost;
+                    neighborCell.hCost = CalculateManhattanDistance(neighborCell.position, goalCell.position) * 10;
 
-                    parentList[neibhorCell] = currentCell;
+                    parentList[neighborCell] = currentCell;
 
-                    float fCost = neibhorCell.gCost + neibhorCell.hCost;
+                    float fCost = neighborCell.gCost + neighborCell.hCost;
 
-                    Debug.Log($"F cost {fCost}");
+                    // Debug.Log($"F cost {fCost}");
 
-                    openset.Enqueue(neibhorCell, fCost);
+                    openset.Enqueue(neighborCell, fCost);
                 }
             }
         }
@@ -87,19 +102,39 @@ public static class AStarPathfinding
         return null;
     }
 
-    private static List<GridCell> ReconstructPath(GridCell startCell, GridCell goalCell, Dictionary<GridCell, GridCell> parents)
+    private static List<GridCell> ReconstructPath(Grid grid, GridCell startCell, GridCell goalCell, Dictionary<GridCell, GridCell> parents)
     {
+        int count = 0;
+
         List<GridCell> path = new List<GridCell>();
         GridCell current = goalCell;
+
+        Debug.Log("BeforePathCreation");
+
         
-        while (current != startCell)
+        while (current.CellType != startCell.CellType /* ||  count < 100*/)
         {
+            //Debug.Log("Before Add");
             path.Add(current);
+            //
+            //
             current = parents[current];
+            Debug.Log("Current Position: " + current.position);
+
+            count++;
         }
 
         path.Remove(goalCell);
+        // path.Remove(startCell);
+
+        startCell.CellType = CellType.RoomCell;
+
         path.Reverse();
+
+        if(path.Count < 2)
+        {
+            return null;
+        }
 
         return path;
     }
@@ -114,26 +149,26 @@ public static class AStarPathfinding
         return (int)Vector2.Distance(point1, point2);
     }
 
-    private static GridCell closestCell(Room room, Vector2 pos)
+    private static GridCell closestCell(Grid grid, Room room, Vector2 pos)
     {
         float Distance = Mathf.Infinity;
-        GridCell bestCell = null;
-        foreach(GridCell cell in room.roomGrid)
+        Vector2 bestCell = new Vector2(0, 0);
+        foreach(Vector2 cellPos in room.roomGrid)
         {
-            float currentDistance = Vector2.Distance(cell.position, pos);
+            float currentDistance = Vector2.Distance(cellPos, pos);
 
-            if(room.cornerCells.Contains(cell))
+            if(room.cornerCells.Contains(cellPos))
             {
                 continue;
             }
             else if(currentDistance<Distance)
             {
                 Distance = currentDistance;
-                bestCell = cell;
+                bestCell = cellPos;
             }
         }
 
-        return bestCell;
+        return grid.GetCell((int)bestCell.x, (int)bestCell.y);
     }
 
     /*

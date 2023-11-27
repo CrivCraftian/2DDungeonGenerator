@@ -21,7 +21,7 @@ public static class RoomPlacer
                 int roomSizeX = Random.Range(roomXLow, roomXHigh);
                 int roomSizeY = Random.Range(roomYLow, roomYHigh);
 
-                Vector2 roomCheckPosition = new Vector2((int)Random.Range(0, dungeonScale.x - roomSizeX), (int)Random.Range(0, dungeonScale.y - roomSizeY));
+                Vector2 roomCheckPosition = new Vector2((int)Random.Range(5, dungeonScale.x - roomSizeX-5), (int)Random.Range(5, dungeonScale.y - roomSizeY-5));
                 bool isValidPosition = true;
 
                 foreach(Room room in rooms)
@@ -61,6 +61,43 @@ public static class RoomPlacer
         return rooms;
     }
 
+    public static void FillInEmptyRoomCells(Grid grid)
+    {
+        int gridX = grid.GetGridX();
+        int gridY = grid.GetGridY();
+
+        Debug.Log($"Grid X: {gridX}, Grid Y: {gridY}");
+
+        for (int i = 0; i < gridX; i++)
+        {
+            for (int j = 0; j < gridY; j++)
+            {
+                Debug.Log("Running Loop");
+                GridCell currentCell = grid.GetCell(i, j);
+
+                int roomCellCount = 0;
+
+                if(currentCell.CellType != CellType.EmptyCell)
+                {
+                    continue;
+                }
+
+                foreach(GridCell cell in currentCell.GetCells())
+                {
+                    if (cell.CellType == CellType.RoomCell)
+                    {
+                        roomCellCount++;
+                    }
+                }
+
+                if(roomCellCount == 4)
+                {
+                    currentCell.CellType = CellType.RoomCell;
+                }
+            }
+        }
+    }
+
     public static void RoomsIntoGrid(Grid grid, Room[] rooms)
     {
         foreach(Room room in rooms)
@@ -74,12 +111,12 @@ public static class RoomPlacer
                     
                     if(i  == 0 && j == 0 || j == 0 && i == room.roomX-1 || i == 0 && j == room.roomY-1 || j == room.roomY-1 && i == room.roomX-1)
                     {
-                        room.cornerCells.Add(newRoomCell);
+                        room.cornerCells.Add(newRoomCell.position);
                     }
 
-                    room.roomGrid.Add(newRoomCell);
+                    room.roomGrid.Add(newRoomCell.position);
 
-                    grid.ChangeCellType(newRoomCell, CellType.RoomCell);
+                    grid.ChangeCellType(grid.GetCell((int)newRoomCell.position.x, (int)newRoomCell.position.y), CellType.RoomCell);
                 }
             }
         }

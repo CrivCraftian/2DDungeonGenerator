@@ -20,7 +20,7 @@ public class PriorityQueue<T>
     {
         int bestIndex = 0;
 
-        for (int i = 0;  i < _queue.Count ; i++)
+        for (int i = 1;  i < _queue.Count ; i++)
         {
             if (_queue[i].Item2 < _queue[bestIndex].Item2)
             {

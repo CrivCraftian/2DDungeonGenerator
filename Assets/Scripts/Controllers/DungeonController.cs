@@ -66,7 +66,7 @@ public class DungeonController : MonoBehaviour
             Instantiate(go, room.roomPosition, Quaternion.identity, this.transform);
         }
         */
-        
+
         /*
         for (int i = 0; i < DungeonGrid.GetGridX(); i++)
         {
@@ -87,7 +87,8 @@ public class DungeonController : MonoBehaviour
 
         MST = PrimsAlgorithm.RunPrim(rooms.ToArray());
 
-       
+        // List<GridCell> path = AStarPathfinding.RunAStarWithRooms(DungeonGrid, rooms[0], rooms[1]);
+        
         foreach(KeyValuePair<Room, List<Room>> frustrating in MST)
         {
             foreach(Room rm in frustrating.Value)
@@ -108,8 +109,12 @@ public class DungeonController : MonoBehaviour
                 */
             }
         }
+        
 
         WallGenerator.GenerateWalls(DungeonGrid);
+        // WallGenerator.GenerateWallCorners(DungeonGrid);
+
+        RoomPlacer.FillInEmptyRoomCells(DungeonGrid);
 
         // List<GridCell> path = AStarPathfinding.RunAStarWithRooms(DungeonGrid, MST.ElementAt(0).Key, MST.ElementAt(0).Value[0]);
 
@@ -123,7 +128,7 @@ public class DungeonController : MonoBehaviour
                 {
                     GameObject go = Instantiate(roomCell, new Vector3(i, j, 1), Quaternion.identity, this.transform);
                 }
-                if(DungeonGrid.PointToCell(new Vector2(j, i)).CellType == CellType.PathCell)
+                if(DungeonGrid.PointToCell(new Vector2(i, j)).CellType == CellType.PathCell)
                 {
                     GameObject go = Instantiate(pathCell, new Vector3(i, j, 1), Quaternion.identity, this.transform);
                 }

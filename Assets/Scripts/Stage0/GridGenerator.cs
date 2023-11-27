@@ -27,17 +27,14 @@ public class GridGenerator
                 if (k < gridX - 1)
                 {
                     GeneratedCells[k, l].AddCell(GeneratedCells[k + 1, l]);
-
                 }
                 if (l > 0)
                 {
                     GeneratedCells[k, l].AddCell(GeneratedCells[k, l - 1]);
-
                 }
-                if (l < gridX - 1)
+                if (l < gridY - 1)
                 {
                     GeneratedCells[k, l].AddCell(GeneratedCells[k, l + 1]);
-
                 }
             }
         }

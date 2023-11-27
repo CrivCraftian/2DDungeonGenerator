@@ -33,9 +33,9 @@ public class Grid
     {
         foreach (GridCell cell in points)
         {
-            Vector2 cellPosition = new Vector2(cell.position.y, cell.position.x);
+            // Vector2 cellPosition = new Vector2(cell.position.y, cell.position.x);
 
-            grid.ChangeCellType(cell, CellType.PathCell);
+            grid.ChangeCellType(grid.GetCell((int)cell.position.x, (int)cell.position.y), CellType.PathCell);
         }
     }
 
