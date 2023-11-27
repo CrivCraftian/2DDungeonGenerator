@@ -7,18 +7,20 @@ using UnityEngine.Analytics;
 
 public static class AStarPathfinding
 {
-    public static List<ICell> RunAStarWithRooms(Grid grid, Room StartRoom, Room EndRoom)
+    public static List<GridCell> RunAStarWithRooms(Grid grid, Room StartRoom, Room EndRoom)
     {
-        RoomCell startCell = (RoomCell)closestCell(StartRoom, EndRoom.RoomCentre);
-        RoomCell goalCell = (RoomCell)closestCell(EndRoom, StartRoom.RoomCentre);
+        GridCell startCell = closestCell(StartRoom, EndRoom.RoomCentre);
+        GridCell goalCell = closestCell(EndRoom, StartRoom.RoomCentre);
 
-        Debug.Log($"Start Cell Position: {startCell.position}");
-        Debug.Log($"End Cell Position: {goalCell.position}");
+        goalCell.CellType = CellType.EmptyCell;
 
-        PriorityQueue<ICell> openset = new PriorityQueue<ICell>();
-        List<ICell> closedset = new List<ICell>();
+        // Debug.Log($"Start Cell Position: {startCell.position}");
+        // Debug.Log($"End Cell Position: {goalCell.position}");
 
-        Dictionary<ICell, ICell> parentList = new Dictionary<ICell, ICell>();
+        PriorityQueue<GridCell> openset = new PriorityQueue<GridCell>();
+        List<GridCell> closedset = new List<GridCell>();
+
+        Dictionary<GridCell, GridCell> parentList = new Dictionary<GridCell, GridCell>();
 
         startCell.gCost = 0;
         startCell.hCost = (int)CalculateManhattanDistance(startCell.position, goalCell.position) * 10;
@@ -27,7 +29,7 @@ public static class AStarPathfinding
 
         while(openset.Count()>0)
         {
-            ICell currentCell = openset.Dequeue();
+            GridCell currentCell = openset.Dequeue();
 
             closedset.Add(currentCell);
 
@@ -38,9 +40,11 @@ public static class AStarPathfinding
                 return ReconstructPath(startCell, goalCell, parentList);
             }
 
-            foreach(ICell neibhorCell in currentCell.GetCells())
+            foreach(GridCell neibhorCell in currentCell.GetCells())
             {
-                if(closedset.Contains(neibhorCell) || neibhorCell is RoomCell)
+                Debug.Log("Iterating Neibhors");
+
+                if(closedset.Contains(neibhorCell) || neibhorCell.CellType == CellType.RoomCell)
                 {
                     Debug.Log("Passed");
                     continue; 
@@ -79,13 +83,14 @@ public static class AStarPathfinding
             }
         }
 
+        Debug.Log("Pathfinding Failed");
         return null;
     }
 
-    private static List<ICell> ReconstructPath(ICell startCell, ICell goalCell, Dictionary<ICell, ICell> parents)
+    private static List<GridCell> ReconstructPath(GridCell startCell, GridCell goalCell, Dictionary<GridCell, GridCell> parents)
     {
-        List<ICell> path = new List<ICell>();
-        ICell current = goalCell;
+        List<GridCell> path = new List<GridCell>();
+        GridCell current = goalCell;
         
         while (current != startCell)
         {
@@ -109,11 +114,11 @@ public static class AStarPathfinding
         return (int)Vector2.Distance(point1, point2);
     }
 
-    private static ICell closestCell(Room room, Vector2 pos)
+    private static GridCell closestCell(Room room, Vector2 pos)
     {
         float Distance = Mathf.Infinity;
-        RoomCell bestCell = null;
-        foreach(RoomCell cell in room.roomGrid)
+        GridCell bestCell = null;
+        foreach(GridCell cell in room.roomGrid)
         {
             float currentDistance = Vector2.Distance(cell.position, pos);
 

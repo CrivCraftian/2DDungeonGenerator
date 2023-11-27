@@ -4,19 +4,19 @@ using UnityEngine;
 
 public class Grid
 {
-    ICell[,] cells;
-    Dictionary<Vector2, ICell> CellVector2 = new Dictionary<Vector2, ICell>();
+    GridCell[,] cells;
+    Dictionary<Vector2, GridCell> CellVector2 = new Dictionary<Vector2, GridCell>();
 
-    public Grid(ICell[,] inputGrid)
+    public Grid(GridCell[,] inputGrid)
     {
         cells = inputGrid;
 
-        CellVector2 = GetConnecectedCellPositions();
+        CellVector2 = GetConnectedCellPositions();
     }
 
-    private Dictionary<Vector2, ICell> GetConnecectedCellPositions()
+    private Dictionary<Vector2, GridCell> GetConnectedCellPositions()
     {
-        Dictionary<Vector2, ICell> PointCell = new Dictionary<Vector2, ICell>();
+        Dictionary<Vector2, GridCell> PointCell = new Dictionary<Vector2, GridCell>();
 
         for (int i = 0; i < cells.GetLength(0)-1; i++)
         {
@@ -29,23 +29,22 @@ public class Grid
         return PointCell;
     }
 
-    public static void PointsToGrid(Grid grid, ICell[] points)
+    public static void PathToGrid(Grid grid, GridCell[] points)
     {
-        foreach (ICell cell in points)
+        foreach (GridCell cell in points)
         {
             Vector2 cellPosition = new Vector2(cell.position.y, cell.position.x);
-            PathCell newPathCell = new PathCell(cellPosition);
 
-            grid.ReplaceCell(cellPosition, newPathCell);
+            grid.ChangeCellType(cell, CellType.PathCell);
         }
     }
 
-    public void SetCell(Vector2 position, ICell cell)
+    public void SetCell(Vector2 position, GridCell cell)
     {
         cells[(int)position.x, (int)position.y] = cell;
     }
 
-    public ICell PointToCell(Vector2 cellPosition)
+    public GridCell PointToCell(Vector2 cellPosition)
     {
         if(CellVector2.ContainsKey(cellPosition))
         {
@@ -57,7 +56,7 @@ public class Grid
         }
     }
 
-    public ICell GetCell(int x, int y)
+    public GridCell GetCell(int x, int y)
     {
         return cells[(int)x, (int)y];
     }
@@ -72,12 +71,11 @@ public class Grid
         return cells.GetLength(1);
     }
 
-    public void ReplaceCell(Vector2 position, ICell cellToReplace)
+    public void ChangeCellType(GridCell cell, CellType type)
     {
-        if(CellVector2.ContainsKey(position))
+        if(CellVector2.ContainsKey(cell.position))
         {
-            cellToReplace.SetCells(CellVector2[position].GetCells());
-            CellVector2[position] = cellToReplace;
+            cells[(int)cell.position.x, (int)cell.position.y].CellType = type;
         }
     }
 }

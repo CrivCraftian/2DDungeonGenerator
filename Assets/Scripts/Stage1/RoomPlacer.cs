@@ -70,7 +70,7 @@ public static class RoomPlacer
                 for (int j = 0; j < room.roomY; j++)
                 {
                     Vector2 cellPosition = new Vector2(room.roomPosition.x + i, room.roomPosition.y + j);
-                    RoomCell newRoomCell = new RoomCell(cellPosition);
+                    GridCell newRoomCell = new GridCell(cellPosition, CellType.RoomCell);
                     
                     if(i  == 0 && j == 0 || j == 0 && i == room.roomX-1 || i == 0 && j == room.roomY-1 || j == room.roomY-1 && i == room.roomX-1)
                     {
@@ -79,7 +79,7 @@ public static class RoomPlacer
 
                     room.roomGrid.Add(newRoomCell);
 
-                    grid.ReplaceCell(cellPosition, newRoomCell);
+                    grid.ChangeCellType(newRoomCell, CellType.RoomCell);
                 }
             }
         }

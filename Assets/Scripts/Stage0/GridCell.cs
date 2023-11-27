@@ -3,6 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+public enum CellType
+{
+    EmptyCell,
+    RoomCell,
+    PathCell,
+    WallCell
+}
+
 public interface ICell
 {
     Vector2 position { get; set; }
@@ -20,10 +28,12 @@ public interface ICell
     List<ICell> GetCells();
 }
 
-public class GridCell : ICell
+public class GridCell
 {
+    public CellType CellType { get; set; }
+
     public Vector2 position { get; set; }
-    public List<ICell> connectedCells { get; set; }
+    public List<GridCell> connectedCells { get; set; }
 
     public int CellCost { get; set; }
 
@@ -32,20 +42,22 @@ public class GridCell : ICell
 
 
 
-    public GridCell(Vector2 cellPosition)
+    public GridCell(Vector2 cellPosition, CellType cellType)
     {
+        CellType = cellType;
+
         position = cellPosition;
-        connectedCells = new List<ICell>();
+        connectedCells = new List<GridCell>();
 
         CellCost = 10;
     }
 
-    public void AddCell(ICell cell)
+    public void AddCell(GridCell cell)
     {
         connectedCells.Add(cell);
     }
 
-    public void RemoveCell(ICell cell)
+    public void RemoveCell(GridCell cell)
     {
         if (connectedCells.Contains(cell))
         {
@@ -53,12 +65,12 @@ public class GridCell : ICell
         }
     }
 
-    public void SetCells(List<ICell> cells)
+    public void SetCells(List<GridCell> cells)
     {
          connectedCells = cells;
     }
 
-    public List<ICell> GetCells()
+    public List<GridCell> GetCells()
     {
         return connectedCells;
     }
@@ -69,6 +81,7 @@ public class GridCell : ICell
     }
 }
 
+/*
 public class RoomCell : ICell
 {
     public Vector2 position { get; set; }
@@ -215,3 +228,4 @@ public class WallCell : ICell
         connectedCells.Clear();
     }
 }
+*/

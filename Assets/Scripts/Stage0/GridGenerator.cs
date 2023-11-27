@@ -6,13 +6,13 @@ public class GridGenerator
 {
     public Grid GenerateGrid(int gridX, int gridY)
     {
-        ICell[,] GeneratedCells = new ICell[gridX, gridY];
+        GridCell[,] GeneratedCells = new GridCell[gridX, gridY];
 
         for (int i = 0; i < gridX; i++)
         {
             for(int j = 0; j < gridY; j++)
             {
-                GeneratedCells[i,j] = new GridCell(new Vector2(i, j));
+                GeneratedCells[i,j] = new GridCell(new Vector2(i, j), CellType.EmptyCell);
             }
         }
 

@@ -17,29 +17,29 @@ public static class WallGenerator
             for(int j = 0; j < gridY; j++)
             {
                 Debug.Log("Running Loop");
-                ICell currentCell = grid.GetCell(i,j);
+                GridCell currentCell = grid.GetCell(i,j);
 
                 if(currentCell == null) continue;
 
-                if(currentCell is RoomCell)
+                if(currentCell.CellType == CellType.RoomCell)
                 {
-                    foreach(ICell cell in currentCell.GetCells())
+                    foreach(GridCell cell in currentCell.GetCells())
                     {
-                        if(!(cell is not RoomCell) || !(cell is not PathCell))
+                        if(cell.CellType == CellType.EmptyCell)
                         {
-                            grid.ReplaceCell(cell.position, new WallCell(cell.position));
+                            grid.ChangeCellType(cell, CellType.WallCell);
                             Debug.Log("Replaced Room wall");
                         }
                     }
                 }
 
-                if(currentCell is PathCell)
+                if(currentCell.CellType == CellType.PathCell)
                 {
-                    foreach (ICell cell in currentCell.GetCells())
+                    foreach (GridCell cell in currentCell.GetCells())
                     {
-                        if (cell is GridCell)
+                        if (cell.CellType == CellType.EmptyCell)
                         {
-                            grid.ReplaceCell(cell.position, new WallCell(cell.position));
+                            grid.ChangeCellType(cell, CellType.WallCell);
                         }
                     }
                 }

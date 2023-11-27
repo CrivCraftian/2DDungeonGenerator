@@ -67,16 +67,18 @@ public class DungeonController : MonoBehaviour
         }
         */
         
+        /*
         for (int i = 0; i < DungeonGrid.GetGridX(); i++)
         {
             for (int j = 0; j < DungeonGrid.GetGridY(); j++)
             {
-                if(DungeonGrid.PointToCell(new Vector2(i, j)) is RoomCell)
+                if(DungeonGrid.PointToCell(new Vector2(i, j)).CellType == CellType.RoomCell)
                 {
                     GameObject go = Instantiate(roomCell, new Vector3(i, j, 1), Quaternion.identity, this.transform);
                 }
             }
         }
+        */
 
         Points = DelaunayTriangulation.RoomsToPoints(rooms);
         List<Triangle> triangles = DelaunayTriangulation.Triangulate(Points);
@@ -90,11 +92,11 @@ public class DungeonController : MonoBehaviour
         {
             foreach(Room rm in frustrating.Value)
             {
-                List<ICell> path = AStarPathfinding.RunAStarWithRooms(DungeonGrid, frustrating.Key, rm);
+                List<GridCell> path = AStarPathfinding.RunAStarWithRooms(DungeonGrid, frustrating.Key, rm);
 
                 if (path != null)
                 {
-                    Grid.PointsToGrid(DungeonGrid, path.ToArray());
+                    Grid.PathToGrid(DungeonGrid, path.ToArray());
                 }
                 
                 /*
@@ -113,19 +115,19 @@ public class DungeonController : MonoBehaviour
 
         // Grid.PointsToGrid(DungeonGrid, path.ToArray());
 
-        for (int i = 0; i < DungeonGrid.GetGridX(); i++)
+        for (int i = 0; i < DungeonGrid.GetGridX()-1; i++)
         {
-            for (int j = 0; j < DungeonGrid.GetGridY(); j++)
+            for (int j = 0; j < DungeonGrid.GetGridY()-1; j++)
             {
-                if (DungeonGrid.PointToCell(new Vector2(i, j)) is RoomCell)
+                if (DungeonGrid.PointToCell(new Vector2(i, j)).CellType == CellType.RoomCell)
                 {
                     GameObject go = Instantiate(roomCell, new Vector3(i, j, 1), Quaternion.identity, this.transform);
                 }
-                if(DungeonGrid.PointToCell(new Vector2(j, i)) is PathCell)
+                if(DungeonGrid.PointToCell(new Vector2(j, i)).CellType == CellType.PathCell)
                 {
                     GameObject go = Instantiate(pathCell, new Vector3(i, j, 1), Quaternion.identity, this.transform);
                 }
-                if(DungeonGrid.PointToCell(new Vector2(i, j)) is WallCell)
+                if(DungeonGrid.PointToCell(new Vector2(i, j)).CellType == CellType.WallCell)
                 {
                     GameObject go = Instantiate(wallCell, new Vector3(i, j, 1), Quaternion.identity, this.transform);
                 }

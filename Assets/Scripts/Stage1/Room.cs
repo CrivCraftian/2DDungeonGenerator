@@ -11,8 +11,8 @@ public class Room
 
     public Vector2 roomPosition { get; set; }
 
-    public List<RoomCell> roomGrid;
-    public List<RoomCell> cornerCells;
+    public List<GridCell> roomGrid;
+    public List<GridCell> cornerCells;
 
     bool isVisited;
     private Dictionary<Room, float> connectedRooms;
@@ -28,8 +28,8 @@ public class Room
 
         isVisited = false;
         
-        roomGrid = new List<RoomCell>();
-        cornerCells = new List<RoomCell>();
+        roomGrid = new List<GridCell>();
+        cornerCells = new List<GridCell>();
 
         connectedRooms = new Dictionary<Room, float>();
     }
