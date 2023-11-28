@@ -21,7 +21,7 @@ public static class RoomPlacer
                 int roomSizeX = Random.Range(roomXLow, roomXHigh);
                 int roomSizeY = Random.Range(roomYLow, roomYHigh);
 
-                Vector2 roomCheckPosition = new Vector2((int)Random.Range(1, dungeonScale.x - roomSizeX-1), (int)Random.Range(1, dungeonScale.y - roomSizeY-1));
+                Vector2 roomCheckPosition = new Vector2((int)Random.Range(2, dungeonScale.x - roomSizeX-2), (int)Random.Range(2, dungeonScale.y - roomSizeY-2));
                 bool isValidPosition = true;
 
                 foreach(Room room in rooms)
