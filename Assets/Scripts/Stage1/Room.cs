@@ -9,7 +9,7 @@ public class Room
 
     public int roomID;
 
-    public Vector2 roomPosition { get; set; }
+    public Vector2 roomPosition { get; }
 
     public List<Vector2> roomGrid;
     public List<Vector2> cornerCells;
