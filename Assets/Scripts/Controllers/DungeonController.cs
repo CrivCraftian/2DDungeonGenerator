@@ -1,7 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class DungeonController : MonoBehaviour
@@ -16,6 +14,7 @@ public class DungeonController : MonoBehaviour
     public GameObject roomCell;
     public GameObject pathCell;
     public GameObject wallCell;
+    public GameObject playerObject;
 
     private List<Room> rooms = new List<Room>();
     public Dictionary<Room, List<Room>> MST;
@@ -120,6 +119,11 @@ public class DungeonController : MonoBehaviour
 
         // Grid.PointsToGrid(DungeonGrid, path.ToArray());
 
+        foreach (Room room in rooms)
+        {
+            RoomPlacer.RefloorRoom(DungeonGrid, room);
+        }
+
         for (int i = 0; i < DungeonGrid.GetGridX()-1; i++)
         {
             for (int j = 0; j < DungeonGrid.GetGridY()-1; j++)
@@ -139,16 +143,19 @@ public class DungeonController : MonoBehaviour
             }
         }
 
-            /*
-            foreach(Triangle triangle in triangles)
-            {
-                GameObject currentTri = Instantiate(this.TriangleObject, new Vector3(0, 0, 0), Quaternion.identity, this.transform);
+        /*
+        foreach(Triangle triangle in triangles)
+        {
+            GameObject currentTri = Instantiate(this.TriangleObject, new Vector3(0, 0, 0), Quaternion.identity, this.transform);
 
-                TriangleObject triScript = currentTri.GetComponent<TriangleObject>();
+            TriangleObject triScript = currentTri.GetComponent<TriangleObject>();
 
-                triScript.connectedTri = triangle;
-            }
-            */
+            triScript.connectedTri = triangle;
+        }
+        */
+
+        int randomRoom = UnityEngine.Random.Range(0, rooms.Count - 1);
+        Instantiate(playerObject, rooms[randomRoom].roomPosition, Quaternion.identity);
 
         }
 

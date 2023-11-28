@@ -21,14 +21,14 @@ public static class RoomPlacer
                 int roomSizeX = Random.Range(roomXLow, roomXHigh);
                 int roomSizeY = Random.Range(roomYLow, roomYHigh);
 
-                Vector2 roomCheckPosition = new Vector2((int)Random.Range(5, dungeonScale.x - roomSizeX-5), (int)Random.Range(5, dungeonScale.y - roomSizeY-5));
+                Vector2 roomCheckPosition = new Vector2((int)Random.Range(1, dungeonScale.x - roomSizeX-1), (int)Random.Range(1, dungeonScale.y - roomSizeY-1));
                 bool isValidPosition = true;
 
                 foreach(Room room in rooms)
                 {
                     float distanceBetweenRooms = Vector2.Distance(roomCheckPosition, room.roomPosition);
                     distanceBetweenRooms = Mathf.Abs(distanceBetweenRooms);
-                    if(distanceBetweenRooms > (room.roomX * 1.5f) && distanceBetweenRooms > (room.roomY * 1.5f))
+                    if(distanceBetweenRooms > (room.roomX * 1f) && distanceBetweenRooms > (room.roomY * 1f))
                     {
                         continue;
                     }
@@ -90,11 +90,19 @@ public static class RoomPlacer
                     }
                 }
 
-                if(roomCellCount == 4)
+                if(roomCellCount >= 3)
                 {
                     currentCell.CellType = CellType.RoomCell;
                 }
             }
+        }
+    }
+
+    public static void RefloorRoom(Grid grid, Room room)
+    {
+        for (int i = 0; i < room.roomGrid.Count; i++)
+        {
+            grid.GetCell((int)room.roomGrid[i].x, (int)room.roomGrid[i].y).CellType = CellType.RoomCell;
         }
     }
 
