@@ -178,9 +178,9 @@ MonoBehaviour:
   GridY: 100
   RoomX: 5
   RoomY: 5
-  roomCountLow: 70
-  roomCountHigh: 70
+  roomCountLow: 20
+  roomCountHigh: 20
   roomXLow: 5
   roomYLow: 5
-  roomXHigh: 10
-  roomYHigh: 10
+  roomXHigh: 15
+  roomYHigh: 15
