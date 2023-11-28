@@ -9,8 +9,8 @@ public static class AStarPathfinding
 {
     public static List<GridCell> RunAStarWithRooms(Grid grid, Room StartRoom, Room EndRoom)
     {
-        GridCell startCell = closestCell(grid, StartRoom, EndRoom.RoomCentre); //.GetEmptyCells(grid);
-        GridCell goalCell = closestCell(grid, EndRoom, StartRoom.RoomCentre); //.GetEmptyCells(grid);
+        GridCell startCell = Grid.GetEmptyCells(grid, closestCell(grid, StartRoom, StartRoom.RoomCentre));
+        GridCell goalCell = Grid.GetEmptyCells(grid, closestCell(grid, EndRoom, EndRoom.RoomCentre));
 
         // goalCell.CellType = CellType.EmptyCell;
 

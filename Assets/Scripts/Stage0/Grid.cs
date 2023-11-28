@@ -56,6 +56,21 @@ public class Grid
         }
     }
 
+    public static GridCell GetEmptyCells(Grid grid, GridCell cell)
+    {
+        foreach (GridCell cellPosition in cell.GetCells())
+        {
+            GridCell currentCell = grid.GetCell((int)cellPosition.position.x, (int)cellPosition.position.y);
+
+            if (currentCell.CellType == CellType.EmptyCell)
+            {
+                return currentCell;
+            }
+        }
+
+        return null;
+    }
+
     public GridCell GetCell(int x, int y)
     {
         return cells[(int)x, (int)y];

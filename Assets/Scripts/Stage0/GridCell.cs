@@ -81,9 +81,9 @@ public class GridCell
         connectedCells.Clear();
     }
 
-    public GridCell GetEmptyCells(Grid grid)
+    public GridCell GetEmptyCells(Grid grid, GridCell cell)
     {
-        foreach(GridCell cellPosition in connectedCells)
+        foreach(GridCell cellPosition in cell.GetCells())
         {
             GridCell currentCell = grid.GetCell((int)cellPosition.position.x, (int)cellPosition.position.y);
 
